@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dishu's Cozy Mini World 🌸✨</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #070711;
+      --card-bg: rgba(26, 20, 42, 0.55);
+      --card-border: rgba(224, 130, 255, 0.22);
+      --primary: #f472b6;
+      --accent: #c084fc;
+      --soft-glow: rgba(192, 132, 252, 0.35);
+      --text: #fdf4ff;
+      --subtext: #a8a29e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 10%, #221238 0%, #070711 80%);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.7;
+      padding-bottom: 125px;
+    }
+
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+      20% { opacity: 0.85; }
+      80% { opacity: 0.85; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    .container {
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 24px 18px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .glass {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 22px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin-bottom: 22px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-zone {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .profile-ring {
+      width: 95px;
+      height: 95px;
+      margin: 0 auto 12px auto;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c084fc, #f472b6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      box-shadow: 0 0 35px var(--soft-glow);
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .hairflip-active {
+      animation: hairflipAnim 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes hairflipAnim {
+      0% { transform: rotate(0deg) scale(1); }
+      30% { transform: rotate(-35deg) scale(1.18); }
+      60% { transform: rotate(25deg) scale(1.12); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #ffffff, #f5d0fe, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 5px 16px;
+      border-radius: 999px;
+      background: rgba(192, 132, 252, 0.15);
+      border: 1px solid var(--accent);
+      color: #f5d0fe;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* Hairflip Card */
+    .hairflip-card {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.18), rgba(244, 114, 182, 0.18));
+      border: 1px solid rgba(244, 114, 182, 0.4);
+    }
+    .hairflip-btn {
+      margin-top: 10px;
+      padding: 13px 26px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #c084fc, #f472b6);
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px var(--soft-glow);
+      transition: transform 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hairflip-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Mood Grid */
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .mood-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 12px 6px;
+      color: white;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .mood-btn:active {
+      background: var(--accent);
+      transform: scale(0.95);
+    }
+    .mood-btn span { font-size: 1.6rem; }
+    #mood-message {
+      margin-top: 14px;
+      padding: 12px;
+      background: rgba(192, 132, 252, 0.12);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      font-size: 0.95rem;
+      color: #f5d0fe;
+      text-align: center;
+      display: none;
+    }
+
+    /* Checklist */
+    .check-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .check-btn {
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: white;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .check-btn.done {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Cafe */
+    .cafe-tray {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 14px;
+    }
+    .cafe-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: white;
+      transition: transform 0.15s ease;
+    }
+    .cafe-btn span {
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .cafe-btn:active {
+      transform: scale(1.15) translateY(-4px);
+    }
+
+    /* Envelopes */
+    .envelope-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .env-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+    .env-item:active {
+      background: rgba(192, 132, 252, 0.15);
+      border-color: var(--accent);
+    }
+
+    /* Breathe */
+    .breath-box {
+      text-align: center;
+      padding: 15px 0;
+    }
+    .breath-circle {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(192, 132, 252, 0.35) 0%, rgba(244, 114, 182, 0.1) 70%);
+      border: 2px solid var(--accent);
+      margin: 0 auto 14px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #f5d0fe;
+      animation: breatheAnimation 7s ease-in-out infinite;
+    }
+    @keyframes breatheAnimation {
+      0%, 100% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.32); opacity: 1; box-shadow: 0 0 35px var(--soft-glow); }
+    }
+
+    /* Polaroids */
+    .polaroid-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .polaroid {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 18px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .polaroid:active {
+      transform: scale(0.96);
+      border-color: var(--primary);
+    }
+
+    /* Affection Meter */
+    .big-heart {
+      font-size: 3.8rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      margin: 10px 0;
+      transition: transform 0.15s ease;
+    }
+    .big-heart:active {
+      transform: scale(1.3) rotate(-10deg);
+    }
+
+    /* Letter */
+    .letter-body {
+      font-size: 0.98rem;
+      color: #f3e8ff;
+      line-height: 1.8;
+      text-align: left;
+    }
+    .cursive-quote {
+      font-family: 'Caveat', cursive;
+      font-size: 1.7rem;
+      color: var(--primary);
+      text-align: center;
+      line-height: 1.35;
+      margin: 18px 0;
+    }
+
+    /* Dock Player */
+    .dock-player {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 540px;
+      background: rgba(18, 14, 28, 0.94);
+      border: 1px solid rgba(224, 130, 255, 0.35);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 26px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    }
+    .vinyl-disc {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #111;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .spinning {
+      animation: rotateDisc 3s linear infinite;
+    }
+    @keyframes rotateDisc {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .track-info {
+      flex: 1;
+      margin-left: 14px;
+      text-align: left;
+    }
+    .track-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .track-status {
+      font-size: 0.75rem;
+      color: var(--primary);
+    }
+    .play-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px var(--soft-glow);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-box {
+      background: #141021;
+      border: 1px solid var(--accent);
+      border-radius: 24px;
+      padding: 24px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+      transform: translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+    }
+    .modal-overlay.active .modal-box {
+      transform: translateY(0);
+    }
+    .modal-close-btn {
+      margin-top: 20px;
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Connected Directly to your Uploaded khat.mp3 -->
+  <audio id="bg-audio" loop preload="auto" src="khat.mp3"></audio>
+
+  <div id="particle-sky"></div>
+
+  <div class="container">
+    <div class="header-zone">
+      <div class="profile-ring" id="avatar-icon">💁🏻‍♀️</div>
+      <h1>Dishu’s Mini World</h1>
+      <div class="badge-pill">Lavender Dreams & Pure Sukoon ✨</div>
+    </div>
+
+    <!-- HAIRFLIP SIGNATURE ZONE -->
+    <div class="glass hairflip-card">
+      <div style="font-size: 0.85rem; font-weight: 700; color: #f5d0fe; letter-spacing: 1px; text-transform: uppercase;">
+        Signature Move ✨
+      </div>
+      <p style="color: var(--subtext); font-size: 0.88rem; margin-top: 4px;">
+        Woh killer ada jiska koi muqabla nahi:
+      </p>
+      <button class="hairflip-btn" onclick="doHairflip()">
+        <span>Hairflip 💁🏻‍♀️✨</span>
+      </button>
+    </div>
+
+    <!-- Mood Selector -->
+    <div class="glass">
+      <h3 style="font-size: 1.1rem; text-align: center;">How is Dishu feeling right now?</h3>
+      <div class="mood-grid">
+        <button class="mood-btn" onclick="selectMood('Tumhari smile dekh kar mera poora din ban jata hai! Hamesha aise hi chamakna ✨')">
+          <span>🥰</span> Happy
+        </button>
+        <button class="mood-btn" onclick="selectMood('Rest kar lo thoda! Phone side rakh ke aankhein band karo, you deserve peaceful sleep 💤')">
+          <span>🥱</span> Tired
+        </button>
+        <button class="mood-btn" onclick="selectMood('Pehle jaakar kuch tasty khao! Khana skip karne ki permission bilkul nahi hai 🍕')">
+          <span>🥺</span> Hungry
+        </button>
+        <button class="mood-btn" onclick="selectMood('Kisne pareshan kiya meri Dishu ko? Aake batao, sab theek kar denge 😤❤️')">
+          <span>😾</span> Grumpy
+        </button>
+      </div>
+      <div id="mood-message"></div>
+    </div>
+
+    <!-- Daily Care Checklist -->
+    <div class="glass">
+      <h3 style="font-size: 1.15rem; margin-bottom: 6px;">Daily Care Checklist 🌸</h3>
+      <p style="color: var(--subtext); font-size: 0.85rem; margin-bottom: 14px;">Chhoti-chhoti baatein jo bohot matter karti hain:</p>
+
+      <div class="check-item">
+        <span>💧 Paani achhe se piya aaj?</span>
+        <button class="check-btn" onclick="markDone(this)">Done ✓</button>
+      </div>
+      <div class="check-item">
+        <span>🍲 Time par khana khaya?</span>
+        <button class="check-btn" onclick="markDone(this)">Done ✓</button>
+      </div>
+      <div class="check-item">
+        <span>😊 Apne face par smile rakhi?</span>
+        <button class="check-btn" onclick="markDone(this)">Done ✓</button>
+      </div>
+    </div>
+
+    <!-- The Heartfelt Letter -->
+    <div class="glass">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;">
+        A Note from My Heart 💌
+      </div>
+      
+      <div class="letter-body">
+        <p>Dishu, kabhi-kabhi main sochta hoon ki tumhe exactly kaise bataun ki tum mere liye kitni special ho… kyunki jitna feel karta hoon, utna shayad words mein kabhi explain hi nahi kar paunga. ❤️</p>
+        
+        <p style="margin-top: 12px;">Tum meri life mein bas ek person banke nahi aayi… tum dheere-dheere meri life ka woh beautiful sa part ban gayi ho jiske bina ab bahut si cheezein incomplete si lagti hain. Tumse baat karna, tumhari chhoti-chhoti baatein sunna, tumhara care karna, mera mood samajh lena… ye sab mere liye ordinary nahi hai, bohot precious hai. 🥹</p>
+
+        <div class="cursive-quote">
+          "Mujhe tumhari woh smile pasand hai… kyunki jab tum genuinely smile karti ho, toh mujhe andar se ek ajeeb sa sukoon milta hai."
+        </div>
+
+        <p>Kabhi main apni feelings properly express nahi kar pata, kabhi words kam pad jaate hain… but please, kabhi meri silence ko meri feelings mat samajhna. Mere dil mein tumhare liye jo jagah hai na, woh kisi ek reaction, conversation ya bad day se kabhi change nahi hoti.</p>
+
+        <p style="margin-top: 12px;">Aur ek cheez… tumhe kabhi perfect banne ki zarurat nahi hai. Tum jaisi ho, jis tarah feel karti ho, jis tarah care karti ho… mujhe bas wahi Dishu pasand hai. ❤️</p>
+
+        <div class="cursive-quote">
+          "Kuch connections ko naam dena zaroori nahi hota, bas unhe dil se feel karna enough hota hai."
+        </div>
+
+        <p>Tum important ho. Tum special ho. Tumhari smile important hai. Aur sabse zyada… tum mere liye important ho. 🫶🏻</p>
+      </div>
+    </div>
+
+    <!-- "Open When..." Envelopes -->
+    <div class="glass">
+      <h3 style="font-size: 1.15rem; font-weight: 600;">Open When... ✉️</h3>
+      <p style="color: var(--subtext); font-size: 0.85rem; margin-top: 2px;">Jab bhi inme se kuch feel ho, tap kar lena:</p>
+
+      <div class="envelope-list">
+        <div class="env-item" onclick="openModal('When You Miss Me 🤍', 'Aankhein band karo aur bas ek gehri saans lo. Chahe kitni bhi doori ho, tum meri har thought aur har dua mein pehle number par rehti ho. I will always be right there.')">
+          <span>🥺 When you miss me...</span>
+          <span>➔</span>
+        </div>
+        <div class="env-item" onclick="openModal('When Having a Bad Day 🫂', 'Ek bura din yeh decide nahi karta ki tumhari life buri hai. Tum bohot strong aur pyari ho. Wrap yourself in a blanket and sleep. Kal sab fresh hoga. Main hoon tumhare saath.')">
+          <span>🌧️ When you have a bad day...</span>
+          <span>➔</span>
+        </div>
+        <div class="env-item" onclick="openModal('Reminder: You Are Beautiful ✨', 'Kabhi mirror mein dekh kar doubt mat karna. Tumhari smile, tumhari aankhein, aur tumhara golden heart—sab kuch effortlessly perfect hai. Never forget how rare you are!')">
+          <span>🌸 When you need a reminder of your beauty...</span>
+          <span>➔</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Polaroids Wall -->
+    <div class="glass">
+      <h3 style="font-size: 1.15rem; font-weight: 600;">Little Things I Value 📸</h3>
+      <p style="color: var(--subtext); font-size: 0.85rem;">Tap cards to uncover memories:</p>
+
+      <div class="polaroid-grid">
+        <div class="polaroid" onclick="openModal('Your Killer Smile ✨', 'Tumhari smile mein sach mein healing power hai. Jab tum khul kar hasti ho na, aas-paas sab peaceful lagne lagta hai.')">
+          <div style="font-size: 2.2rem; margin-bottom: 6px;">😊</div>
+          <div style="font-size: 0.85rem; font-weight: 600; color: #f5d0fe;">The Real Smile</div>
+        </div>
+        <div class="polaroid" onclick="openModal('Daily Care Check-in 🍵', 'Woh tumhara random puchna: \'Khana khaya? Paani piya?\' Mere liye tumhara yeh dhyan rakhna sabse valuable hai.')">
+          <div style="font-size: 2.2rem; margin-bottom: 6px;">🍲</div>
+          <div style="font-size: 0.85rem; font-weight: 600; color: #f5d0fe;">Care & Check-ins</div>
+        </div>
+        <div class="polaroid" onclick="openModal('Silent Comfort 🎧', 'Jab words kam pad jaate hain aur tum bina sawaal kiye saath rehti ho… woh sukoon irreplaceable hai.')">
+          <div style="font-size: 2.2rem; margin-bottom: 6px;">🤍</div>
+          <div style="font-size: 0.85rem; font-weight: 600; color: #f5d0fe;">Safe Silence</div>
+        </div>
+        <div class="polaroid" onclick="openModal('Dishu Being Dishu 🎀', 'Tumhara effortless aur completely real hona… bina kisi filter ke. You are rare!')">
+          <div style="font-size: 2.2rem; margin-bottom: 6px;">✨</div>
+          <div style="font-size: 0.85rem; font-weight: 600; color: #f5d0fe;">Effortless Dishu</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Virtual Cafe -->
+    <div class="glass" style="text-align: center;">
+      <h3 style="font-size: 1.15rem; font-weight: 600;">Virtual Cafe for Dishu ☕</h3>
+      <p style="color: var(--subtext); font-size: 0.85rem;">Kya lena pasand karogi abhi?</p>
+      
+      <div class="cafe-tray">
+        <button class="cafe-btn" onclick="sendTreat('☕ Hot Chai', 'Ek cup warm adrak-wali chai with lots of sukoon! Thoda break le lo!')">
+          ☕<span>Chai</span>
+        </button>
+        <button class="cafe-btn" onclick="sendTreat('🧋 Boba Tea', 'Sweet chilled boba tea for the sweetest girl!')">
+          🧋<span>Boba</span>
+        </button>
+        <button class="cafe-btn" onclick="sendTreat('🍫 Hot Chocolate', 'Warm hot chocolate marshmallow ke saath, extra cozy vibes!')">
+          🍫<span>Hot Choc</span>
+        </button>
+        <button class="cafe-btn" onclick="sendTreat('🍩 Cute Donut', 'A cute sweet donut to bring an instant smile on your face!')">
+          🍩<span>Donut</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Calm & Breathe -->
+    <div class="glass breath-box">
+      <h3 style="font-size: 1.15rem; font-weight: 600;">Feeling Overwhelmed? 🫧</h3>
+      <p style="color: var(--subtext); font-size: 0.85rem; margin-bottom: 14px;">Circle ke sath saans andar aur bahar lo:</p>
+      
+      <div class="breath-circle">Breathe 🍃</div>
+      <p style="color: #f5d0fe; font-size: 0.9rem; font-style: italic;">
+        "Inhale peace… Exhale whatever is worrying you. Everything is okay."
+      </p>
+    </div>
+
+    <!-- Hugs Counter -->
+    <div class="glass" style="text-align: center;">
+      <h3 style="font-size: 1.15rem; font-weight: 600;">Affection Meter 🫶🏻</h3>
+      <p style="color: var(--subtext); font-size: 0.85rem;">Tap the heart to send warm hugs!</p>
+      
+      <button class="big-heart" onclick="tapHeart(event)">💖</button>
+      <div id="hug-counter" style="font-size: 1.1rem; font-weight: 600; color: #f5d0fe;">
+        0 Hugs Sent
+      </div>
+    </div>
+
+    <div style="text-align: center; color: var(--subtext); font-size: 0.85rem; margin-top: 30px;">
+      Exclusively built for Dishu 🤍<br>
+      Always here for you.
+    </div>
+  </div>
+
+  <!-- Persistent Dock Player for Khat -->
+  <div class="dock-player">
+    <div class="vinyl-disc" id="disc">🎵</div>
+    <div class="track-info">
+      <div class="track-title">Khat 🎧</div>
+      <div class="track-status" id="player-status">Tap play for track ✨</div>
+    </div>
+    <button class="play-btn" id="play-button" onclick="toggleMusic()">▶</button>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal-overlay" id="modal-screen" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <h3 id="modal-title" style="color: var(--primary); font-size: 1.25rem; margin-bottom: 10px;">Title</h3>
+      <p id="modal-desc" style="color: #f3e8ff; font-size: 0.95rem; line-height: 1.6;">Message</p>
+      <button class="modal-close-btn" onclick="closeModal()">Close with a Smile 🫶🏻</button>
+    </div>
+  </div>
+
+  <script>
+    // Sky Particles
+    const sky = document.getElementById('particle-sky');
+    const icons = ['✨', '🌸', '💜', '🫧', '🤍', '⭐'];
+    for(let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.innerText = icons[Math.floor(Math.random() * icons.length)];
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.fontSize = (12 + Math.random() * 16) + 'px';
+      p.style.animationDuration = (7 + Math.random() * 7) + 's';
+      p.style.animationDelay = (Math.random() * 6) + 's';
+      sky.appendChild(p);
+    }
+
+    // Hairflip Signature Animation
+    function doHairflip() {
+      const avatar = document.getElementById('avatar-icon');
+      avatar.classList.add('hairflip-active');
+      setTimeout(() => avatar.classList.remove('hairflip-active'), 900);
+
+      confetti({ particleCount: 50, spread: 80, origin: { y: 0.4 } });
+      openModal("Dishu’s Iconic Hairflip 💁🏻‍♀️✨", "Uff! Yeh hairflip aur ye ada… seedhe dil pe lagti hai! Nobody pulls off confidence & cuteness better than you! 🫶🏻🔥");
+    }
+
+    // Direct Audio Controller
+    let playing = false;
+    const audio = document.getElementById('bg-audio');
+    const disc = document.getElementById('disc');
+    const playBtn = document.getElementById('play-button');
+    const statusText = document.getElementById('player-status');
+
+    function toggleMusic() {
+      if (!playing) {
+        audio.play().then(() => {
+          playing = true;
+          disc.classList.add('spinning');
+          playBtn.innerText = '⏸';
+          statusText.innerText = 'Now Playing: Khat 🎵';
+        }).catch(err => {
+          console.log("Audio play error:", err);
+          alert("Audio file play nahi ho rahi. Check karein ki 'khat.mp3' ka naam exactly yahi hai.");
+        });
+      } else {
+        audio.pause();
+        playing = false;
+        disc.classList.remove('spinning');
+        playBtn.innerText = '▶';
+        statusText.innerText = 'Music Paused';
+      }
+    }
+
+    function selectMood(text) {
+      const msgBox = document.getElementById('mood-message');
+      msgBox.style.display = 'block';
+      msgBox.innerText = text;
+      confetti({ particleCount: 30, spread: 50, origin: { y: 0.4 } });
+    }
+
+    function markDone(btn) {
+      btn.classList.toggle('done');
+      if (btn.classList.contains('done')) {
+        btn.innerText = "Good Girl! ✨";
+        confetti({ particleCount: 25, spread: 45 });
+      } else {
+        btn.innerText = "Done ✓";
+      }
+    }
+
+    function sendTreat(item, msg) {
+      openModal(item + ' for You! 🧁', msg);
+      confetti({ particleCount: 45, spread: 65 });
+    }
+
+    let hugs = 0;
+    function tapHeart(e) {
+      hugs++;
+      document.getElementById('hug-counter').innerText = `${hugs} Warm Hugs Sent 🫶🏻`;
+      confetti({
+        particleCount: 25,
+        spread: 60,
+        origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }
+      });
+    }
+
+    function openModal(title, text) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-desc').innerText = text;
+      document.getElementById('modal-screen').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-screen').classList.remove('active');
+    }
+  </script>
+</body>
+</html>
