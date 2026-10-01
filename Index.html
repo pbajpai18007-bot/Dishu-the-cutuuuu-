@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Little World for Dishu ✨</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #0f1016;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent: #ff758f;
+      --accent-glow: rgba(255, 117, 143, 0.35);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* Ambient Glow Background */
+    .glow {
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Welcome / Lock Screen */
+    #lock-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 24px;
+      text-align: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #lock-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .enter-btn {
+      margin-top: 24px;
+      padding: 14px 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ff758f, #ff4d6d);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px var(--accent-glow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .enter-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px 80px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(255, 117, 143, 0.1);
+      border: 1px solid rgba(255, 117, 143, 0.3);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #ffffff, #ffb3c1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Message Card */
+    .letter-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 30px 24px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .letter-card p {
+      margin-bottom: 18px;
+      color: #e5e7eb;
+      font-size: 1rem;
+    }
+
+    .letter-card p.highlight {
+      font-family: 'Caveat', cursive;
+      font-size: 1.6rem;
+      color: var(--accent);
+      line-height: 1.4;
+      text-align: center;
+      margin: 25px 0;
+    }
+
+    /* Interactive Reasons Box */
+    .interactive-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .interactive-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 20px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .interactive-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    #reason-display {
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #ffccd5;
+      font-style: italic;
+      margin-top: 12px;
+    }
+
+    /* Smile trigger */
+    .smile-section {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .smile-btn {
+      padding: 16px 28px;
+      background: linear-gradient(135deg, #ff758f, #ff4d6d);
+      border: none;
+      border-radius: 999px;
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 25px var(--accent-glow);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow"></div>
+
+  <!-- Gateway Screen -->
+  <div id="lock-screen">
+    <span style="font-size: 3rem;">✨</span>
+    <h2 style="margin: 15px 0 8px 0; font-size: 1.6rem;">Hey Dishu</h2>
+    <p style="color: var(--text-muted); max-width: 300px; font-size: 0.95rem;">
+      Kuch cheezein words se zyada dil se feel hoti hain… ek chhota sa corner sirf tumhare liye.
+    </p>
+    <button class="enter-btn" onclick="openWorld()">Open Dishu's World ❤️</button>
+  </div>
+
+  <!-- Main Website Content -->
+  <div class="container">
+    <header>
+      <div class="badge">Created with pure heart</div>
+      <h1>For Dishu ❤️</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 6px;">
+        Jiske smile mein mujhe sukoon milta hai.
+      </p>
+    </header>
+
+    <!-- The Heartfelt Letter -->
+    <div class="letter-card">
+      <p>Dishu, kabhi-kabhi main sochta hoon ki tumhe exactly kaise bataun ki tum mere liye kitni special ho… kyunki jitna feel karta hoon, utna shayad words mein kabhi explain hi nahi kar paunga. ❤️</p>
+      
+      <p>Tum meri life mein bas ek person banke nahi aayi… tum dheere-dheere meri life ka woh beautiful sa part ban gayi ho jiske bina ab bahut si cheezein incomplete si lagti hain. Tumse baat karna, tumhari chhoti-chhoti baatein sunna, tumhara care karna, mera mood samajh lena… ye sab mere liye ordinary nahi hai. Mere liye ye sab bahut precious hai. 🥹</p>
+
+      <p class="highlight">"Mujhe tumhari woh smile pasand hai… kyunki jab tum genuinely smile karti ho, toh mujhe andar se ek ajeeb sa sukoon milta hai."</p>
+
+      <p>Kabhi main apni feelings properly express nahi kar pata, kabhi words kam pad jaate hain… but please, kabhi meri silence ko meri feelings mat samajhna. Mere dil mein tumhare liye jo jagah hai na, woh kisi ek conversation ya bad day se kabhi change nahi hoti.</p>
+
+      <p>Tumne jis tarah mujhe samjha hai, support kiya hai aur hamesha stand liya hai, uske liye thank you bohot chhota word hai. Aur haan… tumhe kabhi perfect banne ki zarurat nahi hai. Tum jaisi ho, mujhe bas wahi Dishu pasand hai. ❤️</p>
+
+      <p class="highlight">"Agar kabhi lage ki tum akeli ho, toh bas ek baar mujhe yaad kar lena… tumhari baat sunne ke liye main hamesha rahunga."</p>
+
+      <p>Kuch connections ko naam dena zaroori nahi hota, bas unhe dil se feel karna enough hota hai. Thank you for being you, Dishu. 🫶🏻</p>
+    </div>
+
+    <!-- Random Reasons Pop Box -->
+    <div class="interactive-box">
+      <h3 style="font-size: 1.1rem; font-weight: 600;">Little Things I Value About You</h3>
+      <div id="reason-display">Click the button below 👇</div>
+      <button class="interactive-btn" onclick="nextReason()">Tap for a reason ✨</button>
+    </div>
+
+    <!-- Confetti & Smile Button -->
+    <div class="smile-section">
+      <button class="smile-btn" onclick="triggerSmile()">Send a Virtual Smile & Hug 🫶🏻</button>
+    </div>
+
+    <footer>
+      Always here, in every little moment.<br>
+      Made with ❤️
+    </footer>
+  </div>
+
+  <script>
+    function openWorld() {
+      document.getElementById('lock-screen').classList.add('hidden');
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 }
+      });
+    }
+
+    const reasons = [
+      "Tumhara bina kahe mera mood samajh lena. 🥹",
+      "Woh chhoti-chhoti daily baatein: 'Khana khaya? Paani piya?' ❤️",
+      "Jab tum dil kholkar hasti ho, uska sukoon alag hai. ✨",
+      "Tum jaisi ho—effortless, genuine aur real. 🫶🏻",
+      "Tumhara meri silence ko bina judge kiye samajhna. 🤍",
+      "Life ke kisi bhi bad day mein tumhara ek text hi kaafi hona."
+    ];
+
+    let currentIdx = 0;
+    function nextReason() {
+      const display = document.getElementById('reason-display');
+      display.style.opacity = 0;
+      setTimeout(() => {
+        display.innerText = reasons[currentIdx];
+        display.style.opacity = 1;
+        currentIdx = (currentIdx + 1) % reasons.length;
+      }, 150);
+    }
+
+    function triggerSmile() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      alert("A smile looks best on you! Hamesha aise hi khush rehna Dishu. ❤️");
+    }
+  </script>
+</body>
+</html>
